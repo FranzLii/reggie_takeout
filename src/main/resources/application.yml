@@ -7,7 +7,7 @@ spring:
     redis:
       time-to-live: 1800000
   redis:
-    host: localhost
+    host: 192.168.117.128
     port: 6379
     database: 0
     jedis:

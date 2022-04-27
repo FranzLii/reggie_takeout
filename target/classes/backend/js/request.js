@@ -36,6 +36,9 @@
       config.params = {};
       config.url = url;
     }
+    if(localStorage.getItem("token")){
+      config.headers['Authorization'] = localStorage.getItem("token")
+    }
     return config
   }, error => {
       console.log(error)
@@ -63,6 +66,9 @@
       }
       else if (message.includes("Request failed with status code")) {
         message = "系统接口" + message.substr(message.length - 3) + "异常";
+      }else if(message.includes("authentication") || message.includes("JWT") ||message.includes("token")){
+        message = "登录状态异常"
+        localStorage.removeItem("token");
       }
       window.ELEMENT.Message({
         message: message,

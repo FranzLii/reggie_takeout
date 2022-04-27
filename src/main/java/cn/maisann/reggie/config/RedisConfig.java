@@ -1,6 +1,7 @@
 package cn.maisann.reggie.config;
 
-import com.alibaba.fastjson.support.spring.FastJsonRedisSerializer;
+
+import cn.maisann.reggie.utils.FastJsonRedisSerializer;
 import org.springframework.cache.annotation.CachingConfigurationSelector;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.context.annotation.Bean;
@@ -10,17 +11,26 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-public class RedisConfig extends CachingConfigurerSupport {
+public class RedisConfig {
+
     @Bean
-    public RedisTemplate <Object,Object> redisTemplate(RedisConnectionFactory redisConnectionFactory){
-        RedisTemplate<Object,Object> redisTemplate = new RedisTemplate<>();
+    @SuppressWarnings(value = { "unchecked", "rawtypes" })
+    public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory connectionFactory)
+    {
+        RedisTemplate<Object, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+
         FastJsonRedisSerializer serializer = new FastJsonRedisSerializer(Object.class);
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(serializer);
-        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(serializer);
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
-        redisTemplate.afterPropertiesSet();
-        return redisTemplate;
+
+        // 使用StringRedisSerializer来序列化和反序列化redis的key值
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(serializer);
+
+        // Hash的key也采用StringRedisSerializer的序列化方式
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setHashValueSerializer(serializer);
+
+        template.afterPropertiesSet();
+        return template;
     }
 }

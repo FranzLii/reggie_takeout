@@ -36,6 +36,7 @@
       config.params = {};
       config.url = url;
     }
+    config.headers.Authorization = localStorage.token;
     return config
   }, error => {
       Promise.reject(error)
